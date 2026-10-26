@@ -307,6 +307,80 @@ with right:
         )
         st.altair_chart(chart, use_container_width=True)
 
+
+# --------------------------------------------------
+# MAZMORRAS: FRECUENCIA DE SELECCIÓN
+# --------------------------------------------------
+
+st.divider()
+st.subheader("Mazmorras más elegidas")
+
+dungeon_counts = (
+    games_df["dungeon"]
+    .value_counts()
+    .rename_axis("Mazmorra")
+    .reset_index(name="Veces elegida")
+)
+
+if not dungeon_counts.empty:
+    # Color fijo para cada mazmorra
+    dungeon_colors = {
+        "Bosque": "#2E8B57",
+        "Volcán": "#E25822",
+        "Cueva": "#4682B4",
+        "Desierto": "#DAA520",
+        "Castillo": "#9370DB",
+    }
+
+    # Colores adicionales para mazmorras no configuradas
+    default_colors = [
+        "#E76F51",
+        "#2A9D8F",
+        "#457B9D",
+        "#E9C46A",
+        "#9B5DE5",
+        "#F15BB5",
+        "#577590",
+    ]
+
+    for dungeon in dungeon_counts["Mazmorra"]:
+        if dungeon not in dungeon_colors:
+            dungeon_colors[dungeon] = default_colors[
+                len(dungeon_colors) % len(default_colors)
+            ]
+
+    dungeon_chart = alt.Chart(dungeon_counts).mark_bar().encode(
+        x=alt.X(
+            "Mazmorra:N",
+            sort="-y",
+            title="Mazmorra",
+            axis=alt.Axis(labelAngle=-45),
+        ),
+        y=alt.Y(
+            "Veces elegida:Q",
+            title="Número de partidas",
+        ),
+        color=alt.Color(
+            "Mazmorra:N",
+            scale=alt.Scale(
+                domain=list(dungeon_colors.keys()),
+                range=list(dungeon_colors.values()),
+            ),
+            legend=None,
+        ),
+        tooltip=["Mazmorra", "Veces elegida"],
+    ).properties(
+        height=350,
+    )
+
+    st.altair_chart(
+        dungeon_chart,
+        use_container_width=True,
+    )
+else:
+    st.info("No hay datos de mazmorras para estos filtros.")
+
+
 # --------------------------------------------------
 # PODERES
 # --------------------------------------------------
