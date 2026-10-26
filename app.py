@@ -325,11 +325,12 @@ dungeon_counts = (
 if not dungeon_counts.empty:
     # Color fijo para cada mazmorra
     dungeon_colors = {
-        "Bosque": "#2E8B57",
-        "Volcán": "#E25822",
-        "Cueva": "#4682B4",
-        "Desierto": "#DAA520",
-        "Castillo": "#9370DB",
+        "Valle Mágico": "#f1aee8",
+        "Lago de Hielo": "#9dc1ff",
+        "Península del Lago": "#209dbc",
+        "Colina Soleada": "#2c8b16",
+        "Llanura manchega": "#be6d49",
+        "Mar de lava": "#e7a434",
     }
 
     # Colores adicionales para mazmorras no configuradas
