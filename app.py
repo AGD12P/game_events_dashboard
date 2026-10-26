@@ -160,7 +160,7 @@ for game_id, group in raw.dropna(subset=["game_id"]).groupby("game_id"):
         "game_id": str(game_id),
         "game_date": dates.min() if not dates.empty else pd.NaT,
         "dungeon": dungeons.iloc[0] if not dungeons.empty else "Sin dato",
-        "result": results.iloc[-1] if not results.empty else "En curso",
+        "result": results.iloc[-1] if not results.empty else "Sin concluir",
         "event_count": len(group),
         "power_count": int((group["event"] == "power_selected").sum()),
     })
@@ -306,43 +306,6 @@ with right:
             tooltip=["Fecha", "result", "Partidas"],
         )
         st.altair_chart(chart, use_container_width=True)
-
-# --------------------------------------------------
-# MAZMORRAS
-# --------------------------------------------------
-
-st.divider()
-st.subheader("Análisis de mazmorras")
-
-dungeon_stats = (
-    games_df.groupby("dungeon")
-    .agg(
-        Partidas=("game_id", "nunique"),
-        Victorias=("result", lambda s: (s == "Victoria").sum()),
-        Derrotas=("result", lambda s: (s == "Derrota").sum()),
-    )
-    .reset_index()
-)
-
-dungeon_stats["Win rate (%)"] = (
-    dungeon_stats["Victorias"]
-    / (dungeon_stats["Victorias"] + dungeon_stats["Derrotas"]).replace(0, pd.NA)
-    * 100
-)
-
-dungeon_stats = dungeon_stats.sort_values(
-    "Partidas", ascending=False
-)
-
-if not dungeon_stats.empty:
-    st.bar_chart(
-        dungeon_stats.set_index("dungeon")["Partidas"]
-    )
-    st.dataframe(
-        dungeon_stats.round(1),
-        use_container_width=True,
-        hide_index=True,
-    )
 
 # --------------------------------------------------
 # PODERES
